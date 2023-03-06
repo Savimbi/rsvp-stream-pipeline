@@ -1,0 +1,29 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS/java.puml
+!include DEVICONS/msql_server.puml
+!include FONTAWESOME/adversal.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/bezier_curve.puml
+!include FONTAWESOME/buffer.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "Data producers", "Upstreams", $sprite="bezier_curve")
+System_Boundary(c1, "Processing layer") {
+Container(collector, "Collector", "Java", "Collector module.", $sprite="java")
+Container(analyser, "Analyser", "java", "ETL system", $sprite="java")
+ContainerDb(db, "Database", "Long-term storage", "Reference data", $sprite="msql_server")
+ContainerDb(cache, "Storage", "In memory storage", "Data access", $sprite="buffer")
+}
+System(client, "Clients", "Downstream", $sprite="adversal")
+Rel_R(user, collector, "Uses", "https")
+Rel(collector, analyser, "Uses", "https")
+Rel_L(analyser, db, "Reads/Writes")
+Rel_R(analyser, cache, "Uses", "https")
+Rel_R(cache, client, "Uses", "https")
+@enduml
