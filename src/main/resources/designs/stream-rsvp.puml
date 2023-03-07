@@ -11,7 +11,6 @@
 !include FONTAWESOME/bezier_curve.puml
 !include FONTAWESOME/buffer.puml
 
-LAYOUT_WITH_LEGEND()
 
 Person(user, "Data producers", "Upstreams", $sprite="bezier_curve")
 System_Boundary(c1, "Processing layer") {
@@ -21,9 +20,9 @@ ContainerDb(db, "Database", "Long-term storage", "Reference data", $sprite="msql
 ContainerDb(cache, "Storage", "In memory storage", "Data access", $sprite="buffer")
 }
 System(client, "Clients", "Downstream", $sprite="adversal")
-Rel_R(user, collector, "Uses", "https")
-Rel(collector, analyser, "Uses", "https")
-Rel_L(analyser, db, "Reads/Writes")
-Rel_R(analyser, cache, "Uses", "https")
+Rel_R(user, collector, "Socket", "stream")
+Rel(collector, analyser, "Topic", "stream")
+Rel_L(analyser, db, "Writes", "connector")
+Rel_R(analyser, cache, "Write", "connector")
 Rel_R(cache, client, "Uses", "https")
 @enduml
